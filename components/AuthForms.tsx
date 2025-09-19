@@ -32,7 +32,7 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [accountID, setAccountID] = useState(null);
+  const [accountId, setaccountId] = useState(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,7 +52,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
       });
       console.log(values.fullName);
       console.log(values.email);
-      setAccountID(user.accountId);
+      setaccountId(user.accountId);
     } catch (e) {
       setErrorMessage("failed to create account try again");
     } finally {
@@ -141,8 +141,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
           </div>
         </form>
       </Form>
-      {accountID && (
-        <OTPModal email={form.getValues("email")} accountID={accountID} />
+      {accountId && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
       )}
     </>
   );

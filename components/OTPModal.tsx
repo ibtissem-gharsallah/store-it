@@ -21,10 +21,10 @@ import { Button } from "@/components/ui/button";
 import { sendEmailOTP, verifySecret } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 const OTPModal = ({
-  accountID,
+  accountId,
   email,
 }: {
-  accountID: string;
+  accountId: string;
   email: string;
 }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -36,7 +36,7 @@ const OTPModal = ({
     setIsLoading(true);
     try {
       //call API to Verify OTP
-      const sessionId = await verifySecret({ accountID, password });
+      const sessionId = await verifySecret({ accountId, password });
       if (sessionId) router.push("/");
     } catch (e) {
       console.error("Failed To Verify OTP", e);
