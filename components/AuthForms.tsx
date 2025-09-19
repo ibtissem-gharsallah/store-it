@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { createAccount } from "@/lib/actions/user.actions";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import { email } from "zod/v4";
 import OTPModal from "@/components/OTPModal";
 type FormType = "sign-in" | "sign-up";
@@ -32,7 +32,7 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [accountId, setaccountId] = useState(null);
+  const [accountId, setAccountId] = useState(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,19 +46,19 @@ const AuthForm = ({ type }: { type: FormType }) => {
     setIsLoading(true);
     setErrorMessage("");
     try {
-      const user = await createAccount({
-        fullName: values.fullName || "",
-        email: values.email,
-      });
-      console.log(values.fullName);
-      console.log(values.email);
-      setaccountId(user.accountId);
+      const user =
+        type === "sign-up"
+          ? await createAccount({
+              fullName: values.fullName || "",
+              email: values.email,
+            })
+          : await signInUser({ email: values.email });
+
+      setAccountId(user.accountId);
     } catch (e) {
-      setErrorMessage("failed to create account try again");
+      setErrorMessage("Failed to create account. Please try again.");
     } finally {
-      {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
     }
   };
   return (
