@@ -17,8 +17,8 @@ const getUserByEmail = async (email: string) => {
   );
   return result.total > 0 ? result.documents[0] : null;
 };
-const handleError = (error: unknown, message: string): never => {
-  console.error(error, message);
+const handleError = (error: unknown, message: string) => {
+  console.log(error, message);
   throw error;
 };
 export const sendEmailOTP = async ({ email }: { email: string }) => {
@@ -73,8 +73,8 @@ export const verifySecret = async ({
       secure: true,
     });
     return parseStringify({ sessionId: session.$id });
-  } catch (e) {
-    handleError(e, "Failed to verify OTP");
+  } catch (error) {
+    handleError(error, "Failed to verify OTP");
   }
 };
 export const getCurrentUser = async () => {

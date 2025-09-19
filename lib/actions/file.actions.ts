@@ -5,7 +5,8 @@ import { createAdminClient } from "@/lib/appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "@/lib/appwrite/config";
 import { ID } from "node-appwrite";
-import { constructFileUrl, getFileType } from "@/lib/utils";
+import { constructFileUrl, getFileType, parseStringify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 const handleError = (error: unknown, message: string): never => {
   console.error(error, message);
   throw error;
@@ -36,6 +37,19 @@ export const uploadFile = async ({
       users: [],
       bucketFileId: bucketFile.$id,
     };
+    const newFile = await databases
+      .createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.filesCollectionId,
+        ID.unique(),
+        fileDocument,
+      )
+      .catch(async (error: unknown) => {
+        await storage.deleteFile(appwriteConfig.bucketId, bucketFile.$id);
+        handleError(error, "Failed to create file document");
+      });
+    revalidatePath(path);
+    return parseStringify(newFile);
   } catch (error) {
     handleError(error, "failed to upload file");
   }
